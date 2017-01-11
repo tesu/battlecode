@@ -48,28 +48,7 @@ public strictfp class RobotPlayer {
                 MapLocation myLocation = rc.getLocation();
 
                 //Dodge bullets
-                BulletInfo[] bullets = rc.senseNearbyBullets();
-                if (bullets.length > 0){
-                    BulletInfo nearestBullet = bullets[0];
-                    float distance = myLocation.distanceTo(nearestBullet.location);
-                    for (BulletInfo bullet : bullets){
-                        MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
-                                bullet.location.add(bullet.dir, (float) 0.1).y);
-                        if (myLocation.distanceTo(bullet.location) < distance &&
-                                myLocation.distanceTo(newLocation) <= myLocation.distanceTo(bullet.location)){
-                            distance = myLocation.distanceTo(bullet.location);
-                            nearestBullet = bullet;
-                        }
-                    }
-                    MapLocation newLocation = new MapLocation(nearestBullet.location.add(nearestBullet.dir, (float) 0.1).x,
-                            nearestBullet.location.add(nearestBullet.dir, (float) 0.1).y);
-                    if (rc.getMoveCount() == 0 &&
-                            myLocation.distanceTo(newLocation) <= myLocation.distanceTo(nearestBullet.location)) {
-                        Direction direction = nearestBullet.location.directionTo(myLocation);
-                        tryMove(direction);
-                    }
-                }
-
+                Utils.dodgeBullets(rc);
 
                 //Run away from enemies
                 RobotInfo[] enemies = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
@@ -84,7 +63,7 @@ public strictfp class RobotPlayer {
                     }
                     Direction direction = nearestEnemy.location.directionTo(myLocation);
                     if (rc.getMoveCount() == 0) {
-                        tryMove(direction);
+                        Utils.tryMove(rc, direction);
                     }
                 }
 
@@ -111,13 +90,13 @@ public strictfp class RobotPlayer {
                     }
                     Direction direction = nearestAlly.location.directionTo(myLocation);
                     if (rc.getMoveCount() == 0) {
-                        tryMove(direction);
+                        Utils.tryMove(rc, direction);
                     }
                 }
 
                 // Move randomly
                 if (rc.getMoveCount() == 0) {
-                    tryMove(randomDirection());
+                    Utils.tryMove(rc, randomDirection());
                 }
 
                 if (rc.getTeamBullets() >= 10000){
@@ -153,28 +132,7 @@ public strictfp class RobotPlayer {
                 MapLocation myLocation = rc.getLocation();
 
                 //Dodge bullets
-                BulletInfo[] bullets = rc.senseNearbyBullets();
-                if (bullets.length > 0){
-                    BulletInfo nearestBullet = bullets[0];
-                    float distance = myLocation.distanceTo(nearestBullet.location);
-                    for (BulletInfo bullet : bullets){
-                        MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
-                                bullet.location.add(bullet.dir, (float) 0.1).y);
-                        if (myLocation.distanceTo(bullet.location) < distance &&
-                                myLocation.distanceTo(newLocation) <= myLocation.distanceTo(bullet.location)){
-                            distance = myLocation.distanceTo(bullet.location);
-                            nearestBullet = bullet;
-                        }
-                    }
-                    MapLocation newLocation = new MapLocation(nearestBullet.location.add(nearestBullet.dir, (float) 0.1).x,
-                            nearestBullet.location.add(nearestBullet.dir, (float) 0.1).y);
-                    if (rc.getMoveCount() == 0 &&
-                            myLocation.distanceTo(newLocation) <= myLocation.distanceTo(nearestBullet.location)) {
-                        Direction direction = nearestBullet.location.directionTo(myLocation);
-                        tryMove(direction);
-                    }
-                }
-
+                Utils.dodgeBullets(rc);
 
                 //Run away from enemies
                 RobotInfo[] enemies = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
@@ -189,7 +147,7 @@ public strictfp class RobotPlayer {
                     }
                     Direction direction = nearestEnemy.location.directionTo(myLocation);
                     if (rc.getMoveCount() == 0) {
-                        tryMove(direction);
+                        Utils.tryMove(rc, direction);
                     }
                 }
 
@@ -226,7 +184,7 @@ public strictfp class RobotPlayer {
                     //path to tree
                     dir = rc.getLocation().directionTo(minTree.location);
                     if (rc.getMoveCount() == 0) {
-                        tryMove(dir);
+                        Utils.tryMove(rc, dir);
                     }
 
                     //water tree
@@ -254,13 +212,13 @@ public strictfp class RobotPlayer {
                     }
                     Direction direction = nearestAlly.location.directionTo(myLocation);
                     if (rc.getMoveCount() == 0) {
-                        tryMove(direction);
+                        Utils.tryMove(rc, direction);
                     }
                 }
 
                 // Move randomly
                 if (rc.getMoveCount() == 0) {
-                    tryMove(randomDirection());
+                    Utils.tryMove(rc, randomDirection());
                 }
 
                 if (rc.getTeamBullets() >= 10000){
@@ -289,27 +247,7 @@ public strictfp class RobotPlayer {
                 MapLocation myLocation = rc.getLocation();
 
                 //Dodge bullets
-                BulletInfo[] bullets = rc.senseNearbyBullets();
-                if (bullets.length > 0){
-                    BulletInfo nearestBullet = bullets[0];
-                    float distance = myLocation.distanceTo(nearestBullet.location);
-                    for (BulletInfo bullet : bullets){
-                        MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
-                                bullet.location.add(bullet.dir, (float) 0.1).y);
-                        if (myLocation.distanceTo(bullet.location) < distance &&
-                                myLocation.distanceTo(newLocation) <= myLocation.distanceTo(bullet.location)){
-                            distance = myLocation.distanceTo(bullet.location);
-                            nearestBullet = bullet;
-                        }
-                    }
-                    MapLocation newLocation = new MapLocation(nearestBullet.location.add(nearestBullet.dir, (float) 0.1).x,
-                            nearestBullet.location.add(nearestBullet.dir, (float) 0.1).y);
-                    if (rc.getMoveCount() == 0 &&
-                            myLocation.distanceTo(newLocation) <= myLocation.distanceTo(nearestBullet.location)) {
-                        Direction direction = nearestBullet.location.directionTo(myLocation);
-                        tryMove(direction);
-                    }
-                }
+                Utils.dodgeBullets(rc);
 
                 // See if there are any nearby enemy robots
                 RobotInfo[] enemies = rc.senseNearbyRobots(-1, enemy);
@@ -327,7 +265,7 @@ public strictfp class RobotPlayer {
                     // And we have enough bullets, and haven't attacked yet this turn...
                     Direction direction = myLocation.directionTo(nearestEnemy.location);
                     if (rc.getMoveCount() == 0) {
-                        tryMove(direction);
+                        Utils.tryMove(rc, direction);
                     }
                     if (rc.canFireSingleShot()) {
                         // ...Then fire a bullet in the direction of the enemy.
@@ -351,7 +289,7 @@ public strictfp class RobotPlayer {
                     // And we have enough bullets, and haven't attacked yet this turn...
                     Direction direction = myLocation.directionTo(nearestEnemy.location);
                     if (rc.getMoveCount() == 0) {
-                        tryMove(direction);
+                        Utils.tryMove(rc, direction);
                     }
                     if (rc.canFireSingleShot()) {
                         // ...Then fire a bullet in the direction of the enemy.
@@ -362,7 +300,7 @@ public strictfp class RobotPlayer {
 
                 // Move randomly
                 if (rc.getMoveCount() == 0) {
-                    tryMove(randomDirection());
+                    Utils.tryMove(rc, randomDirection());
                 }
 
                 if (rc.getTeamBullets() >= 200){
@@ -405,10 +343,10 @@ public strictfp class RobotPlayer {
                         MapLocation enemyLocation = robots[0].getLocation();
                         Direction toEnemy = myLocation.directionTo(enemyLocation);
 
-                        tryMove(toEnemy);
+                        Utils.tryMove(rc, toEnemy);
                     } else {
                         // Move Randomly
-                        tryMove(randomDirection());
+                        Utils.tryMove(rc, randomDirection());
                     }
                 }
 
@@ -428,57 +366,6 @@ public strictfp class RobotPlayer {
      */
     static Direction randomDirection() {
         return new Direction((float)Math.random() * 2 * (float)Math.PI);
-    }
-
-    /**
-     * Attempts to move in a given direction, while avoiding small obstacles directly in the path.
-     *
-     * @param dir The intended direction of movement
-     * @return true if a move was performed
-     * @throws GameActionException
-     */
-    static boolean tryMove(Direction dir) throws GameActionException {
-        return tryMove(dir,15,9);
-    }
-
-    /**
-     * Attempts to move in a given direction, while avoiding small obstacles direction in the path.
-     *
-     * @param dir The intended direction of movement
-     * @param degreeOffset Spacing between checked directions (degrees)
-     * @param checksPerSide Number of extra directions checked on each side, if intended direction was unavailable
-     * @return true if a move was performed
-     * @throws GameActionException
-     */
-    static boolean tryMove(Direction dir, float degreeOffset, int checksPerSide) throws GameActionException {
-
-        // First, try intended direction
-        if (rc.canMove(dir)) {
-            rc.move(dir);
-            return true;
-        }
-
-        // Now try a bunch of similar angles
-        boolean moved = false;
-        int currentCheck = 1;
-
-        while(currentCheck<=checksPerSide) {
-            // Try the offset of the left side
-            if(rc.canMove(dir.rotateLeftDegrees(degreeOffset*currentCheck))) {
-                rc.move(dir.rotateLeftDegrees(degreeOffset*currentCheck));
-                return true;
-            }
-            // Try the offset on the right side
-            if(rc.canMove(dir.rotateRightDegrees(degreeOffset*currentCheck))) {
-                rc.move(dir.rotateRightDegrees(degreeOffset*currentCheck));
-                return true;
-            }
-            // No move performed, try slightly further
-            currentCheck++;
-        }
-
-        // A move never happened, so return false.
-        return false;
     }
 
     /**
