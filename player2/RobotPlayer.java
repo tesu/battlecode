@@ -3,7 +3,6 @@ import battlecode.common.*;
 import battlecode.schema.MatchHeader;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public strictfp class RobotPlayer {
     static RobotController rc;
@@ -54,16 +53,23 @@ public strictfp class RobotPlayer {
                     BulletInfo nearestBullet = bullets[0];
                     float distance = myLocation.distanceTo(nearestBullet.location);
                     for (BulletInfo bullet : bullets){
-                        if (myLocation.distanceTo(bullet.location) < distance){
+                        MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
+                                bullet.location.add(bullet.dir, (float) 0.1).y);
+                        if (myLocation.distanceTo(bullet.location) < distance &&
+                                myLocation.distanceTo(newLocation) <= myLocation.distanceTo(bullet.location)){
                             distance = myLocation.distanceTo(bullet.location);
                             nearestBullet = bullet;
                         }
                     }
-                    Direction direction = nearestBullet.location.directionTo(myLocation);
-                    if (rc.getMoveCount() == 0) {
+                    MapLocation newLocation = new MapLocation(nearestBullet.location.add(nearestBullet.dir, (float) 0.1).x,
+                            nearestBullet.location.add(nearestBullet.dir, (float) 0.1).y);
+                    if (rc.getMoveCount() == 0 &&
+                            myLocation.distanceTo(newLocation) <= myLocation.distanceTo(nearestBullet.location)) {
+                        Direction direction = nearestBullet.location.directionTo(myLocation);
                         tryMove(direction);
                     }
                 }
+
 
                 //Run away from enemies
                 RobotInfo[] enemies = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
@@ -152,16 +158,23 @@ public strictfp class RobotPlayer {
                     BulletInfo nearestBullet = bullets[0];
                     float distance = myLocation.distanceTo(nearestBullet.location);
                     for (BulletInfo bullet : bullets){
-                        if (myLocation.distanceTo(bullet.location) < distance){
+                        MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
+                                bullet.location.add(bullet.dir, (float) 0.1).y);
+                        if (myLocation.distanceTo(bullet.location) < distance &&
+                                myLocation.distanceTo(newLocation) <= myLocation.distanceTo(bullet.location)){
                             distance = myLocation.distanceTo(bullet.location);
                             nearestBullet = bullet;
                         }
                     }
-                    Direction direction = nearestBullet.location.directionTo(myLocation);
-                    if (rc.getMoveCount() == 0) {
+                    MapLocation newLocation = new MapLocation(nearestBullet.location.add(nearestBullet.dir, (float) 0.1).x,
+                            nearestBullet.location.add(nearestBullet.dir, (float) 0.1).y);
+                    if (rc.getMoveCount() == 0 &&
+                            myLocation.distanceTo(newLocation) <= myLocation.distanceTo(nearestBullet.location)) {
+                        Direction direction = nearestBullet.location.directionTo(myLocation);
                         tryMove(direction);
                     }
                 }
+
 
                 //Run away from enemies
                 RobotInfo[] enemies = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
@@ -281,13 +294,19 @@ public strictfp class RobotPlayer {
                     BulletInfo nearestBullet = bullets[0];
                     float distance = myLocation.distanceTo(nearestBullet.location);
                     for (BulletInfo bullet : bullets){
-                        if (myLocation.distanceTo(bullet.location) < distance){
+                        MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
+                                bullet.location.add(bullet.dir, (float) 0.1).y);
+                        if (myLocation.distanceTo(bullet.location) < distance &&
+                                myLocation.distanceTo(newLocation) <= myLocation.distanceTo(bullet.location)){
                             distance = myLocation.distanceTo(bullet.location);
                             nearestBullet = bullet;
                         }
                     }
-                    Direction direction = nearestBullet.location.directionTo(myLocation);
-                    if (rc.getMoveCount() == 0) {
+                    MapLocation newLocation = new MapLocation(nearestBullet.location.add(nearestBullet.dir, (float) 0.1).x,
+                            nearestBullet.location.add(nearestBullet.dir, (float) 0.1).y);
+                    if (rc.getMoveCount() == 0 &&
+                            myLocation.distanceTo(newLocation) <= myLocation.distanceTo(nearestBullet.location)) {
+                        Direction direction = nearestBullet.location.directionTo(myLocation);
                         tryMove(direction);
                     }
                 }
