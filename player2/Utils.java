@@ -11,8 +11,8 @@ public class Utils {
 
         BulletInfo[] bullets = rc.senseNearbyBullets();
         if (bullets.length > 0){
-            BulletInfo nearestBullet = bullets[0];
-            float distance = myLocation.distanceTo(nearestBullet.location);
+            BulletInfo nearestBullet = null;
+            float distance = 99;
             for (BulletInfo bullet : bullets){
                 MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
                         bullet.location.add(bullet.dir, (float) 0.1).y);
@@ -22,10 +22,8 @@ public class Utils {
                     nearestBullet = bullet;
                 }
             }
-            MapLocation newLocation = new MapLocation(nearestBullet.location.add(nearestBullet.dir, (float) 0.1).x,
-                    nearestBullet.location.add(nearestBullet.dir, (float) 0.1).y);
-            if (rc.getMoveCount() == 0 &&
-                    myLocation.distanceTo(newLocation) <= myLocation.distanceTo(nearestBullet.location)) {
+
+            if (rc.getMoveCount() == 0 && nearestBullet != null) {
                 Direction direction = nearestBullet.location.directionTo(myLocation);
                 tryMove(rc, direction);
             }
