@@ -1,6 +1,6 @@
 package skeleton;
 
-import battlecode.common.*
+import battlecode.common.*;
 
 public class Utils {
 
