@@ -70,11 +70,11 @@ public strictfp class RobotPlayer {
                 // Attempt to build a gardener
                 Direction dir = randomDirection();
 
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < 25; i++) {
                     if (rc.canHireGardener(dir)) {
                         rc.hireGardener(dir);
                     }
-                    dir.rotateLeftDegrees(45);
+                    dir.rotateLeftDegrees(15);
                 }
 
                 //Try to move to empty space
@@ -91,6 +91,14 @@ public strictfp class RobotPlayer {
                     Direction direction = nearestAlly.location.directionTo(myLocation);
                     if (rc.getMoveCount() == 0) {
                         Utils.tryMove(rc, direction);
+                    }
+                }
+
+                TreeInfo[] trees = rc.senseNearbyTrees(1, Team.NEUTRAL);
+                for (TreeInfo tree : trees){
+                    if (rc.canShake(tree.ID)){
+                        rc.shake(tree.ID);
+                        break;
                     }
                 }
 
@@ -155,30 +163,30 @@ public strictfp class RobotPlayer {
                 Direction dir = randomDirection();
 
                 if (treeCount < 4) {
-                    for (int i = 0; i < 9; i++) {
+                    for (int i = 0; i < 25; i++) {
                         if (rc.canPlantTree(dir)) {
                             rc.plantTree(dir);
                             treeCount++;
                         }
-                        dir.rotateLeftDegrees(45);
+                        dir.rotateLeftDegrees(15);
                     }
                 }
                 //build soldier
                 dir = randomDirection();
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < 25; i++) {
                     if (rc.canBuildRobot(RobotType.SOLDIER, dir)) {
                         rc.buildRobot(RobotType.SOLDIER, dir);
                     }
-                    dir.rotateLeftDegrees(45);
+                    dir.rotateLeftDegrees(15);
                 }
 
                 //find tree
-                TreeInfo[] trees = rc.senseNearbyTrees();
+                TreeInfo[] trees = rc.senseNearbyTrees(-1, rc.getTeam());
                 if (trees.length > 0){
                     TreeInfo minTree = trees[0];
-                    for (int i = 0; i < trees.length; i++) {
-                        if (trees[i].health < minTree.health) {
-                            minTree = trees[i];
+                    for (TreeInfo tree : trees) {
+                        if (tree.health < minTree.health) {
+                            minTree = tree;
                         }
                     }
                     //path to tree
@@ -189,13 +197,22 @@ public strictfp class RobotPlayer {
 
                     //water tree
                     minTree = new TreeInfo(-1,rc.getTeam(),rc.getLocation(),1,999,0,null);
-                    for (int i = 0; i < trees.length; i++) {
-                        if (trees[i].health < minTree.health && rc.canWater(trees[i].ID)) {
-                            minTree = trees[i];
+                    for (TreeInfo tree : trees) {
+                        if (tree.health < minTree.health && rc.canWater(tree.ID)
+                                && rc.canInteractWithTree(tree.location)) {
+                            minTree = tree;
                         }
                     }
-                    if (rc.canWater(minTree.ID)){
+                    if (rc.canWater(minTree.ID) && rc.canInteractWithTree(minTree.location)){
                         rc.water(minTree.ID);
+                    }
+                }
+
+                trees = rc.senseNearbyTrees(1, Team.NEUTRAL);
+                for (TreeInfo tree : trees){
+                    if (rc.canShake(tree.ID)){
+                        rc.shake(tree.ID);
+                        break;
                     }
                 }
 
@@ -254,23 +271,25 @@ public strictfp class RobotPlayer {
 
                 // If there are some...
                 if (enemies.length > 0){
-                    RobotInfo nearestEnemy = enemies[0];
-                    float distance = myLocation.distanceTo(nearestEnemy.location);
+                    RobotInfo lowestEnemy = enemies[0];
                     for (RobotInfo target : enemies){
-                        if (myLocation.distanceTo(target.location) < distance){
-                            distance = myLocation.distanceTo(target.location);
-                            nearestEnemy = target;
+                        if (target.health < lowestEnemy.health){
+                            lowestEnemy = target;
                         }
                     }
                     // And we have enough bullets, and haven't attacked yet this turn...
-                    Direction direction = myLocation.directionTo(nearestEnemy.location);
                     if (rc.getMoveCount() == 0) {
-                        Utils.tryMove(rc, direction);
+                        if (lowestEnemy.type != RobotType.LUMBERJACK){
+                            Utils.tryMove(rc, myLocation.directionTo(lowestEnemy.location));
+                        }
+                        else {
+                            Utils.tryMove(rc, lowestEnemy.location.directionTo(myLocation));
+                        }
                     }
                     if (rc.canFireSingleShot()) {
                         // ...Then fire a bullet in the direction of the enemy.
                         myLocation = rc.getLocation();
-                        rc.fireSingleShot(myLocation.directionTo(nearestEnemy.location));
+                        rc.fireSingleShot(myLocation.directionTo(lowestEnemy.location));
                     }
                 }
 
@@ -278,23 +297,28 @@ public strictfp class RobotPlayer {
 
                 // If there are some...
                 if (enemyTrees.length > 0){
-                    TreeInfo nearestEnemy = enemyTrees[0];
-                    float distance = myLocation.distanceTo(nearestEnemy.location);
+                    TreeInfo lowestEnemy = enemyTrees[0];
                     for (TreeInfo target : enemyTrees){
-                        if (myLocation.distanceTo(target.location) < distance){
-                            distance = myLocation.distanceTo(target.location);
-                            nearestEnemy = target;
+                        if (target.health < lowestEnemy.health){
+                            lowestEnemy = target;
                         }
                     }
                     // And we have enough bullets, and haven't attacked yet this turn...
-                    Direction direction = myLocation.directionTo(nearestEnemy.location);
                     if (rc.getMoveCount() == 0) {
-                        Utils.tryMove(rc, direction);
+                        Utils.tryMove(rc, myLocation.directionTo(lowestEnemy.location));
                     }
                     if (rc.canFireSingleShot()) {
                         // ...Then fire a bullet in the direction of the enemy.
                         myLocation = rc.getLocation();
-                        rc.fireSingleShot(myLocation.directionTo(nearestEnemy.location));
+                        rc.fireSingleShot(myLocation.directionTo(lowestEnemy.location));
+                    }
+                }
+
+                TreeInfo[] trees = rc.senseNearbyTrees(1, Team.NEUTRAL);
+                for (TreeInfo tree : trees){
+                    if (rc.canShake(tree.ID)){
+                        rc.shake(tree.ID);
+                        break;
                     }
                 }
 
