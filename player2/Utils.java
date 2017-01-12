@@ -17,7 +17,7 @@ public class Utils {
                 MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
                         bullet.location.add(bullet.dir, (float) 0.1).y);
                 if (myLocation.distanceTo(bullet.location) < distance &&
-                        myLocation.distanceTo(newLocation) <= myLocation.distanceTo(bullet.location)){
+                        myLocation.distanceTo(newLocation) < myLocation.distanceTo(bullet.location)){
                     distance = myLocation.distanceTo(bullet.location);
                     nearestBullet = bullet;
                 }
