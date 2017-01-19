@@ -7,10 +7,11 @@ import java.util.Random;
 public class Gardener {
     final static float octa_con = 0.46926627053f;
     final static float octa_con2 = 2.61312592975f;
+    static int status = 0;
+    static int timer = 0;
 
     public static void run(RobotController rc) {
         try {
-            int status = 0;
             boolean planted = false;
 
             Random rand = new Random(rc.getID());
@@ -18,12 +19,13 @@ public class Gardener {
 
             while (true) {
                 System.out.println(status);
+                timer++;
 
                 switch (status) {
                     case 0:
                         MapLocation center = rc.getLocation().add(face.opposite(), octa_con2-2);
                         if (goodSpot(rc, center)) {
-                            status++;
+                            nextStage();
                         } else {
                             if (rc.canMove(face)) rc.move(face);
                             else {
@@ -48,18 +50,23 @@ public class Gardener {
                         if (planted && rc.canMove(face.rotateRightDegrees(112.5f), octa_con)) {
                             rc.move(face.rotateRightDegrees(112.5f), octa_con);
                             face = face.rotateRightDegrees(45);
-                            status++;
+                            nextStage();
                             planted = false;
                         }
                         break;
                     case 8:
                         if (rc.canMove(face.opposite(), octa_con2-2)) {
                             rc.move(face.opposite(), octa_con2-2);
-                            status++;
+                            nextStage();
                         }
                     case 9:
                     default:
 
+                }
+
+                if (timer > 25) {
+                    // give up
+                    rc.disintegrate();
                 }
 
                 TreeInfo[] myTrees = rc.senseNearbyTrees(-1, rc.getTeam());
@@ -78,6 +85,12 @@ public class Gardener {
             System.out.println(e.getMessage());
             rc.disintegrate();
         }
+
+    }
+
+    public static void nextStage() {
+        status++;
+        timer = 0;
     }
 
     public static boolean goodSpot(RobotController rc, MapLocation center) throws GameActionException {

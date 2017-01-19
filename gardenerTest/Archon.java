@@ -14,7 +14,7 @@ public class Archon {
 
             while (true) {
                 Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
-                if (R.gardeners() < 2) {
+                if (R.gardeners < 2) {
                     if (rc.canHireGardener(face.opposite())) {
                         rc.hireGardener(face.opposite());
                     }
