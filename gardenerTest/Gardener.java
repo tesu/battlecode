@@ -2,7 +2,6 @@ package gardenerTest;
 
 import battlecode.common.*;
 
-import java.awt.*;
 import java.util.Random;
 
 public class Gardener {
@@ -12,6 +11,7 @@ public class Gardener {
     public static void run(RobotController rc) {
         try {
             int status = 0;
+            boolean planted = false;
 
             Random rand = new Random(rc.getID());
             Direction face = new Direction(2 * (float)Math.PI * rand.nextFloat());
@@ -41,13 +41,15 @@ public class Gardener {
                     case 5:
                     case 6:
                     case 7:
-                        if (rc.canPlantTree(face)) {
+                        if (rc.canPlantTree(face) && !planted) {
                             rc.plantTree(face);
-                            if (rc.canMove(face.rotateRightDegrees(112.5f), octa_con)) {
-                                rc.move(face.rotateRightDegrees(112.5f), octa_con);
-                                face = face.rotateRightDegrees(45);
-                                status++;
-                            }
+                            planted = true;
+                        }
+                        if (planted && rc.canMove(face.rotateRightDegrees(112.5f), octa_con)) {
+                            rc.move(face.rotateRightDegrees(112.5f), octa_con);
+                            face = face.rotateRightDegrees(45);
+                            status++;
+                            planted = false;
                         }
                         break;
                     case 8:

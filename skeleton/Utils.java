@@ -3,7 +3,7 @@ package skeleton;
 import battlecode.common.*;
 
 public class Utils {
-    public class RobotAnalysis {
+    public static class RobotAnalysis {
         int archons = 0;
         int gardeners = 0;
         int lumberjacks = 0;

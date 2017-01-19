@@ -1,6 +1,8 @@
 package gardenerTest;
 
 import battlecode.common.*;
+import skeleton.*;
+import skeleton.Utils;
 
 import java.util.Random;
 
@@ -8,18 +10,24 @@ public class Archon {
     public static void run(RobotController rc) {
         try {
             Random rand = new Random(rc.getID());
-            int gardeners = 0;
+            Direction face = new Direction(2 * (float)Math.PI * rand.nextFloat());
 
             while (true) {
-                Direction d = new Direction(rand.nextFloat()*(float)Math.PI*2);
-                if (true) {
-                    if (rc.canHireGardener(d)) {
-                        rc.hireGardener(d);
-                        gardeners++;
+                Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
+                if (R.gardeners() < 2) {
+                    if (rc.canHireGardener(face.opposite())) {
+                        rc.hireGardener(face.opposite());
                     }
-                } else {
-                    rc.disintegrate();
                 }
+
+                if (rc.canMove(face)) rc.move(face);
+                else {
+                    while (!rc.canMove(face)) {
+                        face = new Direction(2 * (float)Math.PI * rand.nextFloat());
+                    }
+                    rc.move(face);
+                }
+
                 Clock.yield();
             }
         } catch (Exception e) {
