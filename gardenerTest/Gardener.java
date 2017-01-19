@@ -71,7 +71,7 @@ public class Gardener {
                                 break;
                             }
                         }
-                        if (rc.senseNearbyTrees(1).length >= 5) status = 9;
+                        if (rc.senseNearbyTrees(2).length >= 5) status = 9;
                         break;
                     default:
 
@@ -95,7 +95,7 @@ public class Gardener {
             }
         } catch (GameActionException e) {
             System.out.println(e.getMessage());
-            rc.disintegrate();
+            run(rc); // this may be a really bad idea lol
         }
 
     }
