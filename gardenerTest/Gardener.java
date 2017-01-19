@@ -60,13 +60,25 @@ public class Gardener {
                             nextStage();
                         }
                     case 9:
+                        timer = 0;
+                        break;
+                    case 10:
+                        timer = 0;
+                        for (int i = 0; i < 5; i++) {
+                            Direction d = face.rotateRightDegrees(60*i);
+                            if (rc.canPlantTree(d)) {
+                                rc.plantTree(d);
+                                break;
+                            }
+                        }
+                        if (rc.senseNearbyTrees(1).length >= 5) status = 9;
+                        break;
                     default:
 
                 }
 
-                if (timer > 25) {
-                    // give up
-                    rc.disintegrate();
+                if (timer > 100) {
+                    status = 10;
                 }
 
                 TreeInfo[] myTrees = rc.senseNearbyTrees(-1, rc.getTeam());
