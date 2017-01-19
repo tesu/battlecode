@@ -2,18 +2,19 @@ package gardenerTest;
 
 import battlecode.common.*;
 
+import java.awt.*;
 import java.util.Random;
 
 public class Gardener {
+    final static float octa_con = 0.46926627053f;
+    final static float octa_con2 = 2.61312592975f;
+
     public static void run(RobotController rc) {
         try {
-            final float octa_con = 0.46926627053f;
-            final float octa_con2 = 2.61312592975f;
             int status = 0;
 
             Random rand = new Random(rc.getID());
-            int offset = rand.nextInt(6);
-            Direction face = new Direction(360f * rand.nextFloat());
+            Direction face = new Direction(2 * (float)Math.PI * rand.nextFloat());
 
             while (true) {
                 System.out.println(status);
@@ -21,19 +22,18 @@ public class Gardener {
                 switch (status) {
                     case 0:
                         MapLocation center = rc.getLocation().add(face.opposite(), octa_con2-2);
-                        if (rc.onTheMap(center, octa_con2+1) &&
-                                !rc.isCircleOccupiedExceptByThisRobot(center, octa_con2+1)) {
+                        if (goodSpot(rc, center)) {
                             status++;
                         } else {
                             if (rc.canMove(face)) rc.move(face);
                             else {
                                 while (!rc.canMove(face)) {
-                                    face = new Direction(360f * rand.nextFloat());
+                                    face = new Direction(2 * (float)Math.PI * rand.nextFloat());
                                 }
                                 rc.move(face);
                             }
                         }
-                        break;
+                        if (status == 0) break;
                     case 1:
                     case 2:
                     case 3:
@@ -76,5 +76,14 @@ public class Gardener {
             System.out.println(e.getMessage());
             rc.disintegrate();
         }
+    }
+
+    public static boolean goodSpot(RobotController rc, MapLocation center) throws GameActionException {
+        if (!rc.onTheMap(center, octa_con2+1)) return false;
+        if (rc.isCircleOccupiedExceptByThisRobot(center, octa_con2+1)) return false;
+        for (RobotInfo robot : rc.senseNearbyRobots(center, 2*octa_con2+2, rc.getTeam())) {
+            if (robot.getType() == RobotType.GARDENER && robot.getID() != rc.getID()) return false;
+        }
+        return true;
     }
 }

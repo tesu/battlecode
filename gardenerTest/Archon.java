@@ -12,7 +12,7 @@ public class Archon {
 
             while (true) {
                 Direction d = new Direction(rand.nextFloat()*(float)Math.PI*2);
-                if (gardeners == 0) {
+                if (true) {
                     if (rc.canHireGardener(d)) {
                         rc.hireGardener(d);
                         gardeners++;
