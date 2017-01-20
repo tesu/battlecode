@@ -13,6 +13,11 @@ public class Gardener {
     static boolean planted = false;
     static boolean moved = false;
 
+    static int scouts = 0;
+    static int soldiers = 0;
+    static int lumberjacks = 0;
+    static int tanks = 0;
+
     public static void run(RobotController rc) {
         while (true) {
             try {
@@ -67,21 +72,31 @@ public class Gardener {
                     case 9:
                     case 11:
                         timer = 0;
-                        Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
 
+                        int h = buildHeuristic(rc);
                         if (status == 9) {
-                            if (rc.isBuildReady() && !moved && rc.canMove(face, octa_con2 - 2)) {
+                            if (h != 0 && !moved && rc.canMove(face, octa_con2 - 2)) {
                                 rc.move(face, octa_con2 - 2);
                                 moved = true;
-                            } else if (!rc.isBuildReady() && moved && rc.canMove(face.opposite(), octa_con2 - 2)) {
+                            } else if (h == 0 && moved && rc.canMove(face.opposite(), octa_con2 - 2)) {
                                 rc.move(face.opposite(), octa_con2 - 2);
                                 moved = false;
                             }
                         }
 
-                        // do some analysis
-                        if (rc.canBuildRobot(RobotType.SCOUT, face)) {
-                            rc.buildRobot(RobotType.SCOUT, face);
+                        switch(h) {
+                            case 1:
+                                if (rc.canBuildRobot(RobotType.SCOUT, face)) {
+                                    rc.buildRobot(RobotType.SCOUT, face);
+                                }
+                                break;
+                            case 2:
+                                if (rc.canBuildRobot(RobotType.SOLDIER, face)) {
+                                    rc.buildRobot(RobotType.SOLDIER, face);
+                                }
+                                break;
+                            default:
+
                         }
 
                         break;
@@ -117,7 +132,6 @@ public class Gardener {
                 Clock.yield();
             } catch (GameActionException e) {
                 System.out.println(e.getMessage());
-                run(rc); // this may be a really bad idea lol
             }
         }
 
@@ -135,5 +149,15 @@ public class Gardener {
             if (robot.getType() == RobotType.GARDENER && robot.getID() != rc.getID()) return false;
         }
         return true;
+    }
+
+    public static int buildHeuristic(RobotController rc) throws GameActionException {
+        if (rc.getTeamBullets() < 80) return 0;
+        if (!rc.isBuildReady()) return 0;
+
+        Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
+        if (R.scouts + R.soldiers > 3) return 0;
+        if (R.scouts < 2 && scouts <= soldiers) return 1;
+        return 2;
     }
 }

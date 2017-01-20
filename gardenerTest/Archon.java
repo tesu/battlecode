@@ -1,7 +1,6 @@
 package gardenerTest;
 
 import battlecode.common.*;
-import skeleton.*;
 import skeleton.Utils;
 
 import java.util.Random;
