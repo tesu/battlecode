@@ -3,6 +3,12 @@ package skeleton;
 import battlecode.common.*;
 
 public class Utils {
+    public static void alwaysRun(RobotController rc) throws GameActionException {
+        if (rc.getTeamBullets() / 10 >= 1000 - rc.getTeamVictoryPoints()) {
+            rc.donate((1000 - rc.getTeamVictoryPoints())*10);
+        }
+    }
+
     public static class RobotAnalysis {
         public int archons = 0;
         public int gardeners = 0;

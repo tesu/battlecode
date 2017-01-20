@@ -1,6 +1,7 @@
 package gardenerTest;
 
 import battlecode.common.*;
+import skeleton.Utils;
 
 import java.util.Random;
 
@@ -9,28 +10,32 @@ public class Gardener {
     final static float octa_con2 = 2.61312592975f;
     static int status = 0;
     static int timer = 0;
+    static boolean planted = false;
+    static boolean moved = false;
 
     public static void run(RobotController rc) {
-        try {
-            boolean planted = false;
+        while (true) {
+            try {
+                Utils.alwaysRun(rc);
 
-            Random rand = new Random(rc.getID());
-            Direction face = new Direction(2 * (float)Math.PI * rand.nextFloat());
+                Random rand = new Random(rc.getID());
+                Direction face = new Direction(2 * (float) Math.PI * rand.nextFloat());
 
-            while (true) {
+                Utils.alwaysRun(rc);
+
                 System.out.println(status);
                 timer++;
 
                 switch (status) {
                     case 0:
-                        MapLocation center = rc.getLocation().add(face.opposite(), octa_con2-2);
+                        MapLocation center = rc.getLocation().add(face.opposite(), octa_con2 - 2);
                         if (goodSpot(rc, center)) {
                             nextStage();
                         } else {
                             if (rc.canMove(face)) rc.move(face);
                             else {
                                 while (!rc.canMove(face)) {
-                                    face = new Direction(2 * (float)Math.PI * rand.nextFloat());
+                                    face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                                 }
                                 rc.move(face);
                             }
@@ -55,23 +60,41 @@ public class Gardener {
                         }
                         break;
                     case 8:
-                        if (rc.canMove(face.opposite(), octa_con2-2)) {
-                            rc.move(face.opposite(), octa_con2-2);
+                        if (rc.canMove(face.opposite(), octa_con2 - 2)) {
+                            rc.move(face.opposite(), octa_con2 - 2);
                             nextStage();
                         }
                     case 9:
+                    case 11:
                         timer = 0;
+                        Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
+
+                        if (status == 9) {
+                            if (rc.isBuildReady() && !moved && rc.canMove(face, octa_con2 - 2)) {
+                                rc.move(face, octa_con2 - 2);
+                                moved = true;
+                            } else if (!rc.isBuildReady() && moved && rc.canMove(face.opposite(), octa_con2 - 2)) {
+                                rc.move(face.opposite(), octa_con2 - 2);
+                                moved = false;
+                            }
+                        }
+
+                        // do some analysis
+                        if (rc.canBuildRobot(RobotType.SCOUT, face)) {
+                            rc.buildRobot(RobotType.SCOUT, face);
+                        }
+
                         break;
                     case 10:
                         timer = 0;
-                        for (int i = 0; i < 5; i++) {
-                            Direction d = face.rotateRightDegrees(60*i);
+                        for (int i = 1; i < 6; i++) {
+                            Direction d = face.rotateRightDegrees(60 * i);
                             if (rc.canPlantTree(d)) {
                                 rc.plantTree(d);
                                 break;
                             }
+                            if (i == 5 && rc.isBuildReady() && rc.getTeamBullets() >= 50) nextStage();
                         }
-                        if (rc.senseNearbyTrees(2).length >= 5) status = 9;
                         break;
                     default:
 
@@ -92,10 +115,10 @@ public class Gardener {
                 }
 
                 Clock.yield();
+            } catch (GameActionException e) {
+                System.out.println(e.getMessage());
+                run(rc); // this may be a really bad idea lol
             }
-        } catch (GameActionException e) {
-            System.out.println(e.getMessage());
-            run(rc); // this may be a really bad idea lol
         }
 
     }

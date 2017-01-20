@@ -4,14 +4,6 @@ import battlecode.common.*;
 
 public class RobotPlayer {
     public static void run(RobotController rc) {
-        try {
-            if (rc.getTeamBullets() / 10 >= 1000 - rc.getTeamVictoryPoints()) {
-                rc.donate((1000 - rc.getTeamVictoryPoints())*10);
-            }
-        } catch (GameActionException e) {
-            System.out.println(e.getMessage());
-        }
-
         switch(rc.getType()) {
             case ARCHON:
                 Archon.run(rc);

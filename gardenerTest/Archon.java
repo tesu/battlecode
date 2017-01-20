@@ -8,11 +8,13 @@ import java.util.Random;
 
 public class Archon {
     public static void run(RobotController rc) {
-        try {
-            Random rand = new Random(rc.getID());
-            Direction face = new Direction(2 * (float)Math.PI * rand.nextFloat());
+        Random rand = new Random(rc.getID());
+        Direction face = new Direction(2 * (float)Math.PI * rand.nextFloat());
 
-            while (true) {
+        while (true) {
+            try {
+                Utils.alwaysRun(rc);
+
                 Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
                 if (R.gardeners < 2) {
                     if (rc.canHireGardener(face.opposite())) {
@@ -29,9 +31,9 @@ public class Archon {
                 }
 
                 Clock.yield();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-        } catch (Exception e) {
-
         }
     }
 }
