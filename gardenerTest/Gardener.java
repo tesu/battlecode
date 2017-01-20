@@ -19,13 +19,11 @@ public class Gardener {
     static int tanks = 0;
 
     public static void run(RobotController rc) {
+        Random rand = new Random(rc.getID());
+        Direction face = new Direction(2 * (float) Math.PI * rand.nextFloat());
+
         while (true) {
             try {
-                Utils.alwaysRun(rc);
-
-                Random rand = new Random(rc.getID());
-                Direction face = new Direction(2 * (float) Math.PI * rand.nextFloat());
-
                 Utils.alwaysRun(rc);
 
                 System.out.println(status);
@@ -87,11 +85,13 @@ public class Gardener {
                         switch(h) {
                             case 1:
                                 if (rc.canBuildRobot(RobotType.SCOUT, face)) {
+                                    scouts++;
                                     rc.buildRobot(RobotType.SCOUT, face);
                                 }
                                 break;
                             case 2:
                                 if (rc.canBuildRobot(RobotType.SOLDIER, face)) {
+                                    soldiers++;
                                     rc.buildRobot(RobotType.SOLDIER, face);
                                 }
                                 break;
