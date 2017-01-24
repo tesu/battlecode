@@ -4,8 +4,7 @@ import battlecode.common.*;
 
 public class Utils {
     public static void alwaysRun(RobotController rc) throws GameActionException {
-        TreeInfo[] trees = rc.senseNearbyTrees();
-        for (TreeInfo tree : trees) {
+        for (TreeInfo tree : rc.senseNearbyTrees()) {
             if (tree.containedBullets > 0 && rc.canShake(tree.ID)) {
                 rc.shake(tree.ID);
                 break;
