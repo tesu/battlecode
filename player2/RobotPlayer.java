@@ -27,11 +27,6 @@ public strictfp class RobotPlayer {
 	}
 
     /**
-     * Returns a random Direction
-     * @return a random Direction
-     */
-
-    /**
      * A slightly more complicated example function, this returns true if the given bullet is on a collision
      * course with the current robot. Doesn't take into account objects between the bullet and this robot.
      *
