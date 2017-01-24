@@ -1,302 +1,35 @@
 package player2;
 import battlecode.common.*;
-import battlecode.schema.MatchHeader;
-
-import java.util.*;
 
 public strictfp class RobotPlayer {
     static RobotController rc;
 
-    /**
-     * run() is the method that is called when a robot is instantiated in the Battlecode world.
-     * If this method returns, the robot dies!
-    **/
-    @SuppressWarnings("unused")
     public static void run(RobotController rc) throws GameActionException {
-
-        // This is the RobotController object. You use it to perform actions from this robot,
-        // and to get information on its current status.
         RobotPlayer.rc = rc;
 
-        // Here, we've separated the controls into a different method for each RobotType.
-        // You can add the missing ones or rewrite this into your own control structure.
         switch (rc.getType()) {
             case ARCHON:
-                runArchon();
+                Archon.run(rc);
                 break;
             case GARDENER:
-                runGardener();
+                Gardener.run(rc);
                 break;
             case SOLDIER:
-                runSoldier();
+                Soldier.run(rc);
                 break;
             case LUMBERJACK:
-                runLumberjack();
+                Lumberjack.run(rc);
                 break;
             case SCOUT:
-                runScout();
+                Scout.run(rc);
                 break;
         }
 	}
-
-    static void runArchon() throws GameActionException {
-        System.out.println("I'm an archon!");
-
-        // The code you want your robot to perform every round should be in this loop
-        while (true) {
-
-            // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
-            try {
-                //Dodge bullets
-                Utils.dodgeBullets(rc);
-
-                //Run away from enemies
-                Utils.flee(rc);
-
-                // Attempt to build a gardener
-                Direction dir = randomDirection();
-
-                for (int i = 0; i < 25; i++) {
-                    if (rc.canHireGardener(dir)) {
-                        rc.hireGardener(dir);
-                    }
-                    dir.rotateLeftDegrees(15);
-                }
-
-                //Try to move to empty space
-                Utils.moveToSpace(rc);
-
-                //shake trees
-                Utils.shakeTrees(rc);
-
-                // Move randomly
-                if (rc.getMoveCount() == 0) {
-                    Utils.tryMove(rc, randomDirection());
-                }
-
-                if (rc.getTeamBullets() >= 10000){
-                    rc.donate(10000);
-                }
-
-                // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
-                Clock.yield();
-
-            } catch (Exception e) {
-                System.out.println("Archon Exception");
-                e.printStackTrace();
-            }
-        }
-    }
-
-	static void runGardener() throws GameActionException {
-        System.out.println("I'm a gardener!");
-        int treeCount = 0;
-        // The code you want your robot to perform every round should be in this loop
-        while (true) {
-
-            // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
-            try {
-                //Dodge bullets
-                Utils.dodgeBullets(rc);
-
-                //Run away from enemies
-                Utils.flee(rc);
-
-                //plant tree
-                Direction dir = randomDirection();
-
-                if (treeCount < 4) {
-                    for (int i = 0; i < 25; i++) {
-                        if (rc.canPlantTree(dir)) {
-                            rc.plantTree(dir);
-                            treeCount++;
-                        }
-                        dir.rotateLeftDegrees(15);
-                    }
-                }
-                //build soldier
-                dir = randomDirection();
-                for (int i = 0; i < 25; i++) {
-                    if (rc.canBuildRobot(RobotType.SCOUT, dir)) {
-                        rc.buildRobot(RobotType.SCOUT, dir);
-                    }
-                    dir.rotateLeftDegrees(15);
-                }
-
-                //find tree
-                TreeInfo[] trees = rc.senseNearbyTrees(-1, rc.getTeam());
-                if (trees.length > 0){
-                    TreeInfo minTree = trees[0];
-                    for (TreeInfo tree : trees) {
-                        if (tree.health < minTree.health) {
-                            minTree = tree;
-                        }
-                    }
-                    //path to tree
-                    dir = rc.getLocation().directionTo(minTree.location);
-                    if (rc.getMoveCount() == 0) {
-                        Utils.tryMove(rc, dir);
-                    }
-
-                    //water tree
-                    minTree = new TreeInfo(-1,rc.getTeam(),rc.getLocation(),1,999,0,null);
-                    for (TreeInfo tree : trees) {
-                        if (tree.health < minTree.health && rc.canWater(tree.ID)
-                                && rc.canInteractWithTree(tree.location)) {
-                            minTree = tree;
-                        }
-                    }
-                    if (rc.canWater(minTree.ID) && rc.canInteractWithTree(minTree.location)){
-                        rc.water(minTree.ID);
-                    }
-                }
-
-                //shake trees
-                Utils.shakeTrees(rc);
-
-                //Try to move to empty space
-                Utils.moveToSpace(rc);
-
-                // Move randomly
-                if (rc.getMoveCount() == 0) {
-                    Utils.tryMove(rc, randomDirection());
-                }
-
-                if (rc.getTeamBullets() >= 10000){
-                    rc.donate(10000);
-                }
-
-                // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
-                Clock.yield();
-
-            } catch (Exception e) {
-                System.out.println("Gardener Exception");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    static void runSoldier() throws GameActionException {
-        System.out.println("I'm a soldier!");
-
-        // The code you want your robot to perform every round should be in this loop
-        while (true) {
-
-            // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
-            try {
-                //Dodge bullets
-                Utils.dodgeBullets(rc);
-
-                //attack
-                Utils.attack(rc);
-
-                //shake trees
-                Utils.shakeTrees(rc);
-
-                // Move randomly
-                if (rc.getMoveCount() == 0) {
-                    Utils.tryMove(rc, randomDirection());
-                }
-
-                if (rc.getTeamBullets() >= 200){
-                    rc.donate(50);
-                }
-
-                // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
-                Clock.yield();
-
-            } catch (Exception e) {
-                System.out.println("Soldier Exception");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    static void runScout() throws GameActionException {
-        System.out.println("I'm a scout!");
-        // The code you want your robot to perform every round should be in this loop
-        while (true) {
-
-            // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
-            try {
-                //Dodge bullets
-                Utils.dodgeBullets(rc);
-
-                //attack
-                Utils.attack(rc);
-
-                //shake trees
-                Utils.shakeTrees(rc);
-
-                // Move randomly
-                if (rc.getMoveCount() == 0) {
-                    Utils.tryMove(rc, randomDirection());
-                }
-
-                if (rc.getTeamBullets() >= 200){
-                    rc.donate(50);
-                }
-
-                // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
-                Clock.yield();
-
-            } catch (Exception e) {
-                System.out.println("Soldier Exception");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    static void runLumberjack() throws GameActionException {
-        System.out.println("I'm a lumberjack!");
-        Team enemy = rc.getTeam().opponent();
-
-        // The code you want your robot to perform every round should be in this loop
-        while (true) {
-
-            // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
-            try {
-
-                // See if there are any enemy robots within striking range (distance 1 from lumberjack's radius)
-                RobotInfo[] robots = rc.senseNearbyRobots(RobotType.LUMBERJACK.bodyRadius+GameConstants.LUMBERJACK_STRIKE_RADIUS, enemy);
-
-                if(robots.length > 0 && !rc.hasAttacked()) {
-                    // Use strike() to hit all nearby robots!
-                    rc.strike();
-                } else {
-                    // No close robots, so search for robots within sight radius
-                    robots = rc.senseNearbyRobots(-1,enemy);
-
-                    // If there is a robot, move towards it
-                    if(robots.length > 0) {
-                        MapLocation myLocation = rc.getLocation();
-                        MapLocation enemyLocation = robots[0].getLocation();
-                        Direction toEnemy = myLocation.directionTo(enemyLocation);
-
-                        Utils.tryMove(rc, toEnemy);
-                    } else {
-                        // Move Randomly
-                        Utils.tryMove(rc, randomDirection());
-                    }
-                }
-
-                // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
-                Clock.yield();
-
-            } catch (Exception e) {
-                System.out.println("Lumberjack Exception");
-                e.printStackTrace();
-            }
-        }
-    }
 
     /**
      * Returns a random Direction
      * @return a random Direction
      */
-    static Direction randomDirection() {
-        return new Direction((float)Math.random() * 2 * (float)Math.PI);
-    }
 
     /**
      * A slightly more complicated example function, this returns true if the given bullet is on a collision

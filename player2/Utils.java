@@ -2,9 +2,6 @@ package player2;
 
 import battlecode.common.*;
 
-/**
- * Created by Jason on 1/11/2017.
- */
 public class Utils {
     public static void dodgeBullets(RobotController rc) throws GameActionException {
         MapLocation myLocation = rc.getLocation();
@@ -169,4 +166,9 @@ public class Utils {
         // A move never happened, so return false.
         return false;
     }
+
+    static Direction randomDirection() {
+        return new Direction((float)Math.random() * 2 * (float)Math.PI);
+    }
+
 }
