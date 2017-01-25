@@ -94,7 +94,7 @@ public class Soldier {
             }
         }
     }
-    
+
     public static void nextStage() {
         status++;
     }

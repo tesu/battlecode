@@ -31,18 +31,18 @@ public class Utils {
             }
         }
 
-        if (rc.canMove(d) && directions[(int)d.getAngleDegrees()/directions.length] >= 0) {
+        if (rc.canMove(d) && directions[(int)(d.getAngleDegrees()*directions.length/360)] >= 0) {
             rc.move(d);
             return true;
         }
         for (int i = 1; i < 10; i++) {
             Direction t = d.rotateRightDegrees(i*10);
-            if (rc.canMove(t) && directions[(int)t.getAngleDegrees()/directions.length] >= 0) {
+            if (rc.canMove(t) && directions[(int)(t.getAngleDegrees()*directions.length/360)] >= 0) {
                 rc.move(t);
                 return true;
             }
             t = d.rotateLeftDegrees(i*10);
-            if (rc.canMove(t) && directions[(int)t.getAngleDegrees()/directions.length] >= 0) {
+            if (rc.canMove(t) && directions[(int)(t.getAngleDegrees()*directions.length/360)] >= 0) {
                 rc.move(t);
                 return true;
             }
