@@ -44,10 +44,20 @@ public class Scout {
                         }
                         if (found) rc.broadcast(0, foundEnemies);
                         if (foundEnemies == 0) {
-                            while (!Utils.moveTowards(rc, face)) {
-                                face =  new Direction(2 * (float) Math.PI * rand.nextFloat());
+                            MapLocation[] m = rc.senseBroadcastingRobotLocations();
+                            if (m.length == 0) {
+                                while (!Utils.moveTowards(rc, face)) {
+                                    face = new Direction(2 * (float) Math.PI * rand.nextFloat());
+                                }
+                                break;
                             }
-                            break;
+                            else {
+                                target = m[0];
+                                for (MapLocation l : m) {
+                                    if (rc.getLocation().distanceTo(l) < rc.getLocation().distanceTo(target)) target = l;
+                                }
+                                nextStage();
+                            }
                         } else {
                             nextStage();
                         }
