@@ -3,6 +3,7 @@ package gardenerTest;
 import battlecode.common.*;
 import skeleton.Utils;
 
+import java.util.Map;
 import java.util.Random;
 
 public class Gardener {
@@ -12,6 +13,8 @@ public class Gardener {
     static int timer = 0;
     static boolean planted = false;
     static boolean moved = false;
+
+    static MapLocation center;
 
     static int scouts = 0;
     static int soldiers = 0;
@@ -31,8 +34,8 @@ public class Gardener {
 
                 switch (status) {
                     case 0:
-                        MapLocation center = rc.getLocation().add(face.opposite(), octa_con2 - 2);
-                        if (goodSpot(rc, center)) {
+                        center = rc.getLocation().add(face.opposite(), octa_con2 - 2);
+                        if (goodSpot(rc)) {
                             nextStage();
                         } else {
                             if (rc.canMove(face)) rc.move(face);
@@ -142,7 +145,7 @@ public class Gardener {
         timer = 0;
     }
 
-    public static boolean goodSpot(RobotController rc, MapLocation center) throws GameActionException {
+    public static boolean goodSpot(RobotController rc) throws GameActionException {
         if (!rc.onTheMap(center, octa_con2+1)) return false;
         if (rc.isCircleOccupiedExceptByThisRobot(center, octa_con2+1)) return false;
         for (RobotInfo robot : rc.senseNearbyRobots(center, 2*octa_con2+2, rc.getTeam())) {
@@ -154,11 +157,13 @@ public class Gardener {
     public static int buildHeuristic(RobotController rc) throws GameActionException {
         if (rc.getTeamBullets() < 80) return 0;
         if (!rc.isBuildReady()) return 0;
+        if (rc.senseNearbyRobots(center, 2*octa_con2+2, rc.getTeam()).length > 0) return 0;
 
         Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
         if (rc.getRoundNum() >= rc.getRoundLimit()*3/4) return 0;
         if (R.scouts + R.soldiers > 1) return 0;
-        if (scouts <= (soldiers+1)*3) return 1;
+        if (scouts < 3) return 1;
+        if (scouts <= (soldiers+1)*2) return 1;
         return 2;
     }
 }
