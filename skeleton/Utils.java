@@ -48,11 +48,14 @@ public class Utils {
                         rc.move(left);
                         return true;
                     }
-                } else {
-                    if (rc.canMove(left.opposite())) {
-                        rc.move(left.opposite());
-                        return true;
-                    }
+                }
+                if (rc.canMove(left.opposite())) {
+                    rc.move(left.opposite());
+                    return true;
+                }
+                if (rc.canMove(left)) {
+                    rc.move(left);
+                    return true;
                 }
             }
         }
