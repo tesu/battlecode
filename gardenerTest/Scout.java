@@ -26,7 +26,8 @@ public class Scout {
 
                 System.out.println(status);
 
-                int foundEnemies = rc.readBroadcast(0);
+                Utils.Radio radio = new Utils.Radio(rc);
+
                 RobotInfo[] enemies = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
 
                 switch (status) {
@@ -34,16 +35,12 @@ public class Scout {
                         boolean found = false;
                         for (RobotInfo r : enemies) {
                             if (r.getType() == RobotType.ARCHON || r.getType() == RobotType.GARDENER) {
-                                found = true;
-                                rc.broadcast(foundEnemies*2+1, Math.round(r.getLocation().x));
-                                rc.broadcast(foundEnemies*2+2, Math.round(r.getLocation().y));
+                                radio.addTarget(r.getLocation());
                                 target = r.getLocation();
                                 face = rc.getLocation().directionTo(target);
-                                foundEnemies++;
                             }
                         }
-                        if (found) rc.broadcast(0, foundEnemies);
-                        if (foundEnemies == 0) {
+                        if (radio.targetCount() == 0) {
                             MapLocation[] m = rc.senseBroadcastingRobotLocations();
                             if (m.length == 0) {
                                 while (!Utils.moveTowards(rc, face)) {
@@ -63,10 +60,11 @@ public class Scout {
                         }
                     case 1:
                         if (target == null) {
-                            int t = rc.getID() % foundEnemies;
-                            int x = rc.readBroadcast(t * 2 + 1);
-                            int y = rc.readBroadcast(t * 2 + 2);
-                            target = new MapLocation(x, y);
+                            target = radio.getTarget(rc.getID());
+                            if (target == null) {
+                                status = 0;
+                                break;
+                            }
                             face = rc.getLocation().directionTo(target);
                         }
                         if (!rc.canSenseLocation(target)) {
@@ -79,6 +77,7 @@ public class Scout {
                         }
                     case 2:
                         if (enemies.length == 0) {
+                            radio.deleteTarget(target);
                             target = null;
                             status = 1;
                             break;

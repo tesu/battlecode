@@ -97,6 +97,52 @@ public class Utils {
         return false;
     }
 
+    public static class Radio {
+        RobotController rc;
+
+        public Radio(RobotController myrc) {
+            rc = myrc;
+        }
+
+        public int targetCount() throws GameActionException {
+            return rc.readBroadcast(0);
+        }
+
+        public MapLocation getTarget(int i) throws GameActionException {
+            if (targetCount() == 0) return null;
+            i = i % targetCount();
+            float x = rc.readBroadcastFloat(i*2+1);
+            float y = rc.readBroadcastFloat(i*2+2);
+            return new MapLocation(x,y);
+        }
+
+        public void deleteTarget(MapLocation m) throws GameActionException {
+            for (int i = 0; i < targetCount(); i++) {
+                if (rc.readBroadcastFloat(i*2+1)==m.x && rc.readBroadcastFloat(i*2+2)==m.y) {
+                    del(i);
+                    rc.broadcast(0, targetCount()-1);
+                    break;
+                }
+            }
+        }
+
+        private void del(int i) throws GameActionException {
+            for (int j = i; j < targetCount()-1; j++) {
+                rc.broadcastFloat(j*2+1,rc.readBroadcastFloat(j*2+3));
+                rc.broadcastFloat(j*2+2,rc.readBroadcastFloat(j*2+4));
+            }
+        }
+
+        public void addTarget(MapLocation m) throws GameActionException {
+            for (int i = 0; i < targetCount(); i++) {
+                if (getTarget(i).distanceTo(m) < 0.1) return;
+            }
+            rc.broadcastFloat(targetCount()*2+1, m.x);
+            rc.broadcastFloat(targetCount()*2+2,m.y);
+            rc.broadcast(0,targetCount()+1);
+        }
+    }
+
     public static class RobotAnalysis {
         public int archons = 0;
         public int gardeners = 0;
