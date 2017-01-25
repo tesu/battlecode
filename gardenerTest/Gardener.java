@@ -95,9 +95,7 @@ public class Gardener {
                                 rc.move(face.opposite(), octa_con2 - 2);
                                 moved = false;
                             }
-                        }
-
-                        if (!rc.canBuildRobot(RobotType.SCOUT, face) && rc.isBuildReady() && rc.getTeamBullets() > 80) {
+                        } else if (!rc.canBuildRobot(RobotType.SCOUT, face) && rc.isBuildReady() && rc.getTeamBullets() > 80) {
                             status = 0;
                             timer = 0;
                             break;
