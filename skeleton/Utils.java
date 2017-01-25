@@ -53,7 +53,7 @@ public class Utils {
     }
 
     public static int radiansToInt(float r, int i) {
-        return (int)(r/(2*Math.PI)*i);
+        return Math.floorMod((int)(r/(2*Math.PI)*i),i);
     }
 
     public static boolean willCollide(RobotController rc, BulletInfo b, MapLocation m) {
