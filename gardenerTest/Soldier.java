@@ -87,7 +87,7 @@ public class Soldier {
                         break;
                     case 3:
                         MapLocation newtarget = radio.closestTarget();
-                        if (radio.closestTarget().distanceTo(target) > .1) {
+                        if (newtarget != null && radio.closestTarget().distanceTo(target) > .1) {
                             target = newtarget;
                             status = 1;
                             timer = 0;

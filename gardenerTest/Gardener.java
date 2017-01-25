@@ -117,6 +117,13 @@ public class Gardener {
                         break;
                     case 10:
                         timer = 0;
+                        if (rc.senseNearbyTrees(2*octa_con2+2, Team.NEUTRAL).length > 0) {
+                            if (rc.canBuildRobot(RobotType.LUMBERJACK, face)) {
+                                rc.buildRobot(RobotType.LUMBERJACK, face);
+                                status = 0;
+                                break;
+                            }
+                        }
                         for (int i = 1; i < 6; i++) {
                             Direction d = face.rotateRightDegrees(60 * i);
                             if (rc.canPlantTree(d)) {
