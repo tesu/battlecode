@@ -97,6 +97,14 @@ public class Gardener {
                             }
                         }
 
+                        if (!rc.canBuildRobot(RobotType.SCOUT, face) && rc.isBuildReady() && rc.getTeamBullets() > 80) {
+                            if (rc.senseNearbyTrees(2*octa_con2+2, rc.getTeam()).length == 0) {
+                                status = 0;
+                                timer = 0;
+                                break;
+                            }
+                        }
+
                         switch(h) {
                             case 1:
                                 if (rc.canBuildRobot(RobotType.SCOUT, face)) {
@@ -118,10 +126,13 @@ public class Gardener {
                     case 10:
                         timer = 0;
                         if (rc.senseNearbyTrees(2*octa_con2+2, Team.NEUTRAL).length > 0) {
-                            if (rc.canBuildRobot(RobotType.LUMBERJACK, face)) {
-                                rc.buildRobot(RobotType.LUMBERJACK, face);
-                                status = 0;
-                                break;
+                            for (int i = 1; i < 6; i++) {
+                                Direction d = face.rotateRightDegrees(60 * i);
+                                if (rc.canBuildRobot(RobotType.LUMBERJACK, d)) {
+                                    rc.buildRobot(RobotType.LUMBERJACK, d);
+                                    status = 0;
+                                    break;
+                                }
                             }
                         }
                         for (int i = 1; i < 6; i++) {
@@ -137,7 +148,7 @@ public class Gardener {
 
                 }
 
-                if (timer > 100) {
+                if (timer > 50) {
                     status = 10;
                 }
 

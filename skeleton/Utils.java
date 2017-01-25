@@ -64,16 +64,18 @@ public class Utils {
             rc.move(d);
             return true;
         }
-        for (int i = 1; i < 10; i++) {
-            Direction t = d.rotateRightDegrees(i*10);
-            if (rc.canMove(t)) {
-                rc.move(t);
-                return true;
-            }
-            t = d.rotateLeftDegrees(i*10);
-            if (rc.canMove(t)) {
-                rc.move(t);
-                return true;
+        if (rc.getType() != RobotType.LUMBERJACK || ) {
+            for (int i = 1; i < 10; i++) {
+                Direction t = d.rotateRightDegrees(i * 10);
+                if (rc.canMove(t)) {
+                    rc.move(t);
+                    return true;
+                }
+                t = d.rotateLeftDegrees(i * 10);
+                if (rc.canMove(t)) {
+                    rc.move(t);
+                    return true;
+                }
             }
         }
         return false;
