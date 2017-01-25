@@ -98,11 +98,9 @@ public class Gardener {
                         }
 
                         if (!rc.canBuildRobot(RobotType.SCOUT, face) && rc.isBuildReady() && rc.getTeamBullets() > 80) {
-                            if (rc.senseNearbyTrees(2*octa_con2+2, rc.getTeam()).length == 0) {
-                                status = 0;
-                                timer = 0;
-                                break;
-                            }
+                            status = 0;
+                            timer = 0;
+                            break;
                         }
 
                         switch(h) {
@@ -125,7 +123,7 @@ public class Gardener {
                         break;
                     case 10:
                         timer = 0;
-                        if (rc.senseNearbyTrees(2*octa_con2+2, Team.NEUTRAL).length > 0) {
+                        if (rc.senseNearbyTrees(octa_con2+1, Team.NEUTRAL).length > 0) {
                             for (int i = 1; i < 6; i++) {
                                 Direction d = face.rotateRightDegrees(60 * i);
                                 if (rc.canBuildRobot(RobotType.LUMBERJACK, d)) {
@@ -162,6 +160,8 @@ public class Gardener {
                     if (rc.canWater(lowest.getID())) rc.water(lowest.getID());
                 }
 
+                if (face != null) rc.setIndicatorLine(rc.getLocation(), rc.getLocation().add(face),0,255,0);
+
                 Clock.yield();
             } catch (GameActionException e) {
                 System.out.println(e.getMessage());
@@ -187,7 +187,7 @@ public class Gardener {
     public static int buildHeuristic(RobotController rc) throws GameActionException {
         if (rc.getTeamBullets() < 80) return 0;
         if (!rc.isBuildReady()) return 0;
-        if (rc.senseNearbyRobots(center, 2*octa_con2+2, rc.getTeam()).length > 0) return 0;
+        if (rc.senseNearbyRobots(center, octa_con2+2, rc.getTeam()).length > 0) return 0;
 
         Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
         if (rc.getRoundNum() >= rc.getRoundLimit()*3/4) return 0;

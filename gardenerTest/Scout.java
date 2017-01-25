@@ -88,6 +88,7 @@ public class Scout {
                 Utils.attack(rc);
 
                 if (target != null) rc.setIndicatorLine(rc.getLocation(), target, 255, 0, 0);
+                if (face != null) rc.setIndicatorLine(rc.getLocation(), rc.getLocation().add(face),0,255,0);
 
                 Clock.yield();
             } catch (GameActionException e) {

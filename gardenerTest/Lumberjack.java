@@ -85,7 +85,7 @@ public class Lumberjack {
                     default:
                 }
 
-                if (rc.senseNearbyRobots(2, rc.getTeam().opponent()).length > 0 && rc.canStrike()) rc.strike();
+                if (rc.senseNearbyRobots(2, rc.getTeam().opponent()).length > rc.senseNearbyRobots(2, rc.getTeam()).length && rc.canStrike()) rc.strike();
                 for (TreeInfo t : rc.senseNearbyTrees(-1, rc.getTeam().opponent())) {
                     if (rc.canChop(t.ID)) {
                         rc.chop(t.ID);
@@ -100,6 +100,7 @@ public class Lumberjack {
                 }
 
                 if (target != null) rc.setIndicatorLine(rc.getLocation(), target, 255, 0, 0);
+                if (face != null) rc.setIndicatorLine(rc.getLocation(), rc.getLocation().add(face),0,255,0);
 
                 Clock.yield();
             } catch (GameActionException e) {
