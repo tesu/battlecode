@@ -86,7 +86,7 @@ public class Scout {
                     default:
                 }
 
-
+                Utils.attack(rc);
 
                 Clock.yield();
             } catch (GameActionException e) {

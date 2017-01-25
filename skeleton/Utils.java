@@ -17,7 +17,7 @@ public class Utils {
             rc.donate((1000 - rc.getTeamVictoryPoints())*rc.getVictoryPointCost());
         }
     }
-    
+
     public static boolean moveTowards(RobotController rc, Direction d) throws GameActionException {
         int[] directions = {0,0,0,0,0,0,0,0,0,0};
 
@@ -59,6 +59,36 @@ public class Utils {
         if (Math.abs(theta) > Math.PI/2) return false;
 
         return ((float)Math.abs(b.location.distanceTo(m) * Math.sin(theta)) <= rc.getType().bodyRadius);
+    }
+
+    public static boolean attack(RobotController rc) throws GameActionException {
+        if (!rc.canFireSingleShot()) return false;
+
+        RobotInfo[] enemies = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
+        if (enemies.length > 0) {
+            RobotInfo target = enemies[0];
+            for (RobotInfo t : enemies) {
+                if (t.health < target.health) target = t;
+            }
+            if (rc.canFireSingleShot()) {
+                rc.fireSingleShot(rc.getLocation().directionTo(target.location));
+                return true;
+            }
+        }
+
+        TreeInfo[] trees = rc.senseNearbyTrees(-1, rc.getTeam().opponent());
+        if (trees.length > 0) {
+            TreeInfo target = trees[0];
+            for (TreeInfo t : trees) {
+                if (t.health < target.health) target = t;
+            }
+            if (rc.canFireSingleShot()) {
+                rc.fireSingleShot(rc.getLocation().directionTo(target.location));
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static class RobotAnalysis {
