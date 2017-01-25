@@ -13,8 +13,8 @@ public class Utils {
             }
         }
 
-        if (rc.getTeamBullets() / 10 >= 1000 - rc.getTeamVictoryPoints()) {
-            rc.donate((1000 - rc.getTeamVictoryPoints())*10);
+        if (rc.getTeamBullets() / rc.getVictoryPointCost() >= 1000 - rc.getTeamVictoryPoints()) {
+            rc.donate((1000 - rc.getTeamVictoryPoints())*rc.getVictoryPointCost());
         }
     }
 
