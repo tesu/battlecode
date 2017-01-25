@@ -156,7 +156,8 @@ public class Gardener {
         if (!rc.isBuildReady()) return 0;
 
         Utils.RobotAnalysis R = new Utils.RobotAnalysis(rc.senseNearbyRobots());
-        if (R.scouts + R.soldiers > 3) return 0;
+        if (rc.getRoundNum() >= rc.getRoundLimit()*3/4) return 0;
+        if (R.scouts + R.soldiers > 1) return 0;
         if (R.scouts < 2 && scouts <= soldiers) return 1;
         return 2;
     }

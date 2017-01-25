@@ -20,7 +20,7 @@ public class Utils {
         }
 
         if (rc.getTeamBullets() > 500) {
-            rc.donate(rc.getTeamBullets()-500);
+            rc.donate(rc.getVictoryPointCost()*10);
         }
     }
 
@@ -97,7 +97,7 @@ public class Utils {
                 return true;
             }
         }
-        
+
 //        trees = rc.senseNearbyTrees(2, Team.NEUTRAL);
 //        if (trees.length > 0) {
 //            TreeInfo target = trees[0];
