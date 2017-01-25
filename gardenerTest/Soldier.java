@@ -8,9 +8,11 @@ import java.util.Random;
 public class Soldier {
     static int status = 0;
     static MapLocation target = null;
+    static int timer = 0;
 
     public static void run(RobotController rc) {
         Random rand = new Random(rc.getID());
+        Utils.Radio radio = new Utils.Radio(rc);
 
         Direction face = null;
         for (RobotInfo robot : rc.senseNearbyRobots(2, rc.getTeam())) {
@@ -25,14 +27,12 @@ public class Soldier {
                 Utils.alwaysRun(rc);
 
                 System.out.println(status);
-
-                Utils.Radio radio = new Utils.Radio(rc);
+                timer++;
 
                 RobotInfo[] enemies = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
 
                 switch (status) {
                     case 0:
-                        boolean found = false;
                         for (RobotInfo r : enemies) {
                             if (r.getType() == RobotType.ARCHON || r.getType() == RobotType.GARDENER) {
                                 radio.addTarget(r.getLocation());
@@ -71,6 +71,7 @@ public class Soldier {
                             while (!Utils.moveTowards(rc, face)) {
                                 face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                             }
+                            if (timer >= 100) status = 3;
                             break;
                         } else {
                             nextStage();
@@ -81,8 +82,19 @@ public class Soldier {
                             target = null;
                             status = 1;
                             break;
-                        } else {
-                            Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
+                        }
+                        Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
+                        break;
+                    case 3:
+                        MapLocation newtarget = radio.closestTarget();
+                        if (radio.closestTarget().distanceTo(target) > .1) {
+                            target = newtarget;
+                            status = 1;
+                            timer = 0;
+                            break;
+                        }
+                        while (!Utils.moveTowards(rc, face)) {
+                            face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                         }
                     default:
                 }
@@ -100,5 +112,6 @@ public class Soldier {
 
     public static void nextStage() {
         status++;
+        timer = 0;
     }
 }

@@ -11,6 +11,7 @@ public class Scout {
 
     public static void run(RobotController rc) {
         Random rand = new Random(rc.getID());
+        Utils.Radio radio = new Utils.Radio(rc);
 
         Direction face = null;
         for (RobotInfo robot : rc.senseNearbyRobots(2, rc.getTeam())) {
@@ -25,8 +26,6 @@ public class Scout {
                 Utils.alwaysRun(rc);
 
                 System.out.println(status);
-
-                Utils.Radio radio = new Utils.Radio(rc);
 
                 RobotInfo[] enemies = rc.senseNearbyRobots(-1, rc.getTeam().opponent());
 
