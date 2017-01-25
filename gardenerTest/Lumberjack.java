@@ -41,8 +41,6 @@ public class Lumberjack {
                         if (radio.targetCount() == 0) {
                             MapLocation[] m = rc.senseBroadcastingRobotLocations();
                             if (m.length == 0) {
-                                rc.setIndicatorDot(rc.getLocation().add(face, rc.getType().strideRadius), 255, 0,0);
-                                System.out.println(rc.onTheMap(rc.getLocation().add(face, rc.getType().strideRadius), rc.getType().bodyRadius));
                                 if (!Utils.moveTowards(rc, face) && !rc.onTheMap(rc.getLocation().add(face, rc.getType().strideRadius), rc.getType().bodyRadius)) {
                                     face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                                 }

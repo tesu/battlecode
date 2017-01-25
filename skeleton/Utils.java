@@ -64,7 +64,7 @@ public class Utils {
             rc.move(d);
             return true;
         }
-        if (rc.getType() != RobotType.LUMBERJACK || ) {
+        if (rc.getType() != RobotType.LUMBERJACK || rc.onTheMap(rc.getLocation().add(d, rc.getType().strideRadius), rc.getType().bodyRadius)) {
             for (int i = 1; i < 10; i++) {
                 Direction t = d.rotateRightDegrees(i * 10);
                 if (rc.canMove(t)) {
