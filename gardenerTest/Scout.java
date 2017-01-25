@@ -42,6 +42,7 @@ public class Scout {
                                 foundEnemies++;
                             }
                         }
+                        if (found) rc.broadcast(0, foundEnemies);
                         if (foundEnemies == 0) {
                             while (!Utils.moveTowards(rc, face)) {
                                 face =  new Direction(2 * (float) Math.PI * rand.nextFloat());
