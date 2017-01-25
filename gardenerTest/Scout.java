@@ -6,6 +6,9 @@ import skeleton.Utils;
 import java.util.Random;
 
 public class Scout {
+    static int status = 0;
+    static int timer = 0;
+
     public static void run(RobotController rc) {
         Random rand = new Random(rc.getID());
 
@@ -21,9 +24,10 @@ public class Scout {
             try {
                 Utils.alwaysRun(rc);
 
-                if (rc.canMove(face)) {
-                    rc.move(face);
-                }
+                System.out.println(status);
+                timer++;
+
+                Utils.moveTowards(rc, face);
 
                 Clock.yield();
             } catch (GameActionException e) {
