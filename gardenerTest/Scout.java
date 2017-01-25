@@ -82,6 +82,8 @@ public class Scout {
                             target = null;
                             status = 1;
                             break;
+                        } else {
+                            Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
                         }
                     default:
                 }

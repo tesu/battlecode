@@ -16,6 +16,10 @@ public class Utils {
         if (rc.getTeamBullets() / rc.getVictoryPointCost() >= 1000 - rc.getTeamVictoryPoints()) {
             rc.donate((1000 - rc.getTeamVictoryPoints())*rc.getVictoryPointCost());
         }
+
+        if (rc.getRoundNum() == rc.getRoundLimit()-1) {
+            rc.donate(rc.getTeamBullets());
+        }
     }
 
     public static boolean moveTowards(RobotController rc, Direction d) throws GameActionException {
