@@ -34,6 +34,12 @@ public class Gardener {
 
                 switch (status) {
                     case 0:
+                        if (rc.senseNearbyRobots(-1, rc.getTeam().opponent()).length > 0) {
+                            if (rc.canBuildRobot(RobotType.SCOUT, face)) {
+                                rc.buildRobot(RobotType.SCOUT, face);
+                                break;
+                            }
+                        }
                         center = rc.getLocation().add(face.opposite(), octa_con2 - 2);
                         if (goodSpot(rc)) {
                             nextStage();
@@ -54,6 +60,12 @@ public class Gardener {
                     case 5:
                     case 6:
                     case 7:
+                        if (rc.senseNearbyRobots(-1, rc.getTeam().opponent()).length > 0) {
+                            if (rc.canBuildRobot(RobotType.SCOUT, face)) {
+                                rc.buildRobot(RobotType.SCOUT, face);
+                                break;
+                            }
+                        }
                         if (rc.canPlantTree(face) && !planted) {
                             rc.plantTree(face);
                             planted = true;
