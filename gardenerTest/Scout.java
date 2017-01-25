@@ -86,6 +86,8 @@ public class Scout {
                     default:
                 }
 
+
+
                 Clock.yield();
             } catch (GameActionException e) {
                 System.out.println(e.getMessage());

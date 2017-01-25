@@ -17,11 +17,7 @@ public class Utils {
             rc.donate((1000 - rc.getTeamVictoryPoints())*rc.getVictoryPointCost());
         }
     }
-
-    public static boolean dodge(RobotController rc) {
-        return false;
-    }
-
+    
     public static boolean moveTowards(RobotController rc, Direction d) throws GameActionException {
         int[] directions = {0,0,0,0,0,0,0,0,0,0};
 
