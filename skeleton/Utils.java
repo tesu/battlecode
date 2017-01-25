@@ -18,6 +18,10 @@ public class Utils {
         if (rc.getRoundNum() == rc.getRoundLimit()-1) {
             rc.donate(rc.getTeamBullets());
         }
+
+        if (rc.getTeamBullets() > 500) {
+            rc.donate(rc.getTeamBullets()-500);
+        }
     }
 
     public static boolean moveTowards(RobotController rc, Direction d) throws GameActionException {
@@ -93,9 +97,8 @@ public class Utils {
                 return true;
             }
         }
-
-
-//        trees = rc.senseNearbyTrees(-1, Team.NEUTRAL);
+        
+//        trees = rc.senseNearbyTrees(2, Team.NEUTRAL);
 //        if (trees.length > 0) {
 //            TreeInfo target = trees[0];
 //            for (TreeInfo t : trees) {
@@ -106,7 +109,6 @@ public class Utils {
 //                return true;
 //            }
 //        }
-
 
         return false;
     }
