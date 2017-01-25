@@ -95,17 +95,17 @@ public class Utils {
         }
 
 
-        trees = rc.senseNearbyTrees(-1, Team.NEUTRAL);
-        if (trees.length > 0) {
-            TreeInfo target = trees[0];
-            for (TreeInfo t : trees) {
-                if (rc.getLocation().distanceTo(t.location) < rc.getLocation().distanceTo(target.location)) target = t;
-            }
-            if (rc.canFireSingleShot()) {
-                rc.fireSingleShot(rc.getLocation().directionTo(target.location));
-                return true;
-            }
-        }
+//        trees = rc.senseNearbyTrees(-1, Team.NEUTRAL);
+//        if (trees.length > 0) {
+//            TreeInfo target = trees[0];
+//            for (TreeInfo t : trees) {
+//                if (rc.getLocation().distanceTo(t.location) < rc.getLocation().distanceTo(target.location)) target = t;
+//            }
+//            if (rc.canFireSingleShot()) {
+//                rc.fireSingleShot(rc.getLocation().directionTo(target.location));
+//                return true;
+//            }
+//        }
 
 
         return false;
