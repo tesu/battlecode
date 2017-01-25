@@ -65,8 +65,8 @@ public class Soldier {
                                 status = 0;
                                 break;
                             }
-                            face = rc.getLocation().directionTo(target);
                         }
+                        face = rc.getLocation().directionTo(target);
                         if (!rc.canSenseLocation(target)) {
                             while (!Utils.moveTowards(rc, face)) {
                                 face = new Direction(2 * (float) Math.PI * rand.nextFloat());
@@ -88,6 +88,8 @@ public class Soldier {
                 }
 
                 Utils.attack(rc);
+
+                if (target != null) rc.setIndicatorLine(rc.getLocation(), target, 255, 0, 0);
 
                 Clock.yield();
             } catch (GameActionException e) {
