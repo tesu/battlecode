@@ -25,39 +25,55 @@ public class Utils {
     }
 
     public static boolean moveTowards(RobotController rc, Direction d) throws GameActionException {
-        int[] directions = {0,0,0,0,0,0,0,0,0,0};
-
         if (rc.hasMoved()) return false;
 
-        for (BulletInfo b : rc.senseNearbyBullets(5)) {
-            for (int i = 0; i < directions.length; i++) {
-                if (willCollide(rc, b, rc.getLocation().add(new Direction((float)i/directions.length*2*(float)Math.PI)))) {
-                    directions[i] -= 10;
+        BulletInfo[] bullets = rc.senseNearbyBullets();
+        if (bullets.length > 0) {
+            for (int i = 0; i < bullets.length; i++) {
+                if (!willCollide(rc, bullets[i], rc.getLocation())) bullets[i] = null;
+            }
+            BulletInfo b = null;
+            for (int i = 0; i < bullets.length; i++) {
+                if (b == null && bullets[i] != null) b = bullets[i];
+                else if (b != null && bullets[i] != null) {
+                    if (rc.getLocation().distanceTo(bullets[i].location) < rc.getLocation().distanceTo(b.location)) {
+                        b = bullets[i];
+                    }
+                }
+            }
+            if (b != null) {
+                Direction left = rc.getLocation().directionTo(b.location).rotateLeftDegrees(90);
+                if (Math.abs(left.degreesBetween(d)) < Math.abs(left.opposite().degreesBetween(d))) {
+                    if (rc.canMove(left)) {
+                        rc.move(left);
+                        return true;
+                    }
+                } else {
+                    if (rc.canMove(left.opposite())) {
+                        rc.move(left.opposite());
+                        return true;
+                    }
                 }
             }
         }
 
-        if (rc.canMove(d) && directions[radiansToInt(d.radians, directions.length)] >= 0) {
+        if (rc.canMove(d)) {
             rc.move(d);
             return true;
         }
         for (int i = 1; i < 10; i++) {
             Direction t = d.rotateRightDegrees(i*10);
-            if (rc.canMove(t) && directions[radiansToInt(t.radians, directions.length)] >= 0) {
+            if (rc.canMove(t)) {
                 rc.move(t);
                 return true;
             }
             t = d.rotateLeftDegrees(i*10);
-            if (rc.canMove(t) && directions[radiansToInt(t.radians, directions.length)] >= 0) {
+            if (rc.canMove(t)) {
                 rc.move(t);
                 return true;
             }
         }
         return false;
-    }
-
-    public static int radiansToInt(float r, int i) {
-        return Math.floorMod((int)(r/(2*Math.PI)*i),i);
     }
 
     public static boolean willCollide(RobotController rc, BulletInfo b, MapLocation m) {

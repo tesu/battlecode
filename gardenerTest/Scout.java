@@ -32,7 +32,6 @@ public class Scout {
 
                 switch (status) {
                     case 0:
-                        boolean found = false;
                         for (RobotInfo r : enemies) {
                             if (r.getType() == RobotType.ARCHON || r.getType() == RobotType.GARDENER) {
                                 radio.addTarget(r.getLocation());
