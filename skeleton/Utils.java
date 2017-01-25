@@ -151,6 +151,15 @@ public class Utils {
             return new MapLocation(x,y);
         }
 
+        public MapLocation closestTarget() throws GameActionException {
+            MapLocation o = getTarget(0);
+            for (int i = 1; i < targetCount(); i++) {
+                MapLocation k = getTarget(i);
+                if (rc.getLocation().distanceTo(k) < rc.getLocation().distanceTo(o)) o = k;
+            }
+            return o;
+        }
+
         public void deleteTarget(MapLocation m) throws GameActionException {
             for (int i = 0; i < targetCount(); i++) {
                 if (rc.readBroadcastFloat(i*2+1)==m.x && rc.readBroadcastFloat(i*2+2)==m.y) {

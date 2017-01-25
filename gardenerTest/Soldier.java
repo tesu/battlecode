@@ -60,7 +60,7 @@ public class Soldier {
                         }
                     case 1:
                         if (target == null) {
-                            target = radio.getTarget(rc.getID());
+                            target = radio.closestTarget();
                             if (target == null) {
                                 status = 0;
                                 break;
