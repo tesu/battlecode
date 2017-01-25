@@ -2,8 +2,6 @@ package skeleton;
 
 import battlecode.common.*;
 
-import java.awt.*;
-
 public class Utils {
     public static void alwaysRun(RobotController rc) throws GameActionException {
         for (TreeInfo tree : rc.senseNearbyTrees()) {
@@ -35,23 +33,27 @@ public class Utils {
             }
         }
 
-        if (rc.canMove(d) && directions[(int)(d.getAngleDegrees()*directions.length/360)] >= 0) {
+        if (rc.canMove(d) && directions[radiansToInt(d.radians, directions.length)] >= 0) {
             rc.move(d);
             return true;
         }
         for (int i = 1; i < 10; i++) {
             Direction t = d.rotateRightDegrees(i*10);
-            if (rc.canMove(t) && directions[(int)(t.getAngleDegrees()*directions.length/360)] >= 0) {
+            if (rc.canMove(t) && directions[radiansToInt(t.radians, directions.length)] >= 0) {
                 rc.move(t);
                 return true;
             }
             t = d.rotateLeftDegrees(i*10);
-            if (rc.canMove(t) && directions[(int)(t.getAngleDegrees()*directions.length/360)] >= 0) {
+            if (rc.canMove(t) && directions[radiansToInt(t.radians, directions.length)] >= 0) {
                 rc.move(t);
                 return true;
             }
         }
         return false;
+    }
+
+    public static int radiansToInt(float r, int i) {
+        return (int)(r/(2*Math.PI)*i);
     }
 
     public static boolean willCollide(RobotController rc, BulletInfo b, MapLocation m) {
