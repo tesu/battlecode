@@ -83,7 +83,7 @@ public class Lumberjack {
                     default:
                 }
 
-                // implement striking
+                if (rc.senseNearbyRobots(2, rc.getTeam().opponent()).length > 0 && rc.canStrike()) rc.strike();
                 for (TreeInfo t : rc.senseNearbyTrees(-1, rc.getTeam().opponent())) {
                     if (rc.canChop(t.ID)) {
                         rc.chop(t.ID);
