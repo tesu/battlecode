@@ -10,4 +10,3 @@ current stuff to consider in no particular order
 6. not have all units facerush enemies (besides lumberjacks, and especially scouts)
 7. better pathing in general (especially for soldiers)
 8. actual archon ai for fleeing / moving to open areas for gardeners
-9. improved gardener heuristics for what to build when
