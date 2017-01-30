@@ -70,6 +70,7 @@ public class Gardener {
                             rc.plantTree(face);
                             planted = true;
                         }
+                        if (!planted && rc.getTeamBullets() < 50) timer--;
                         if (planted && rc.canMove(face.rotateRightDegrees(112.5f), octa_con)) {
                             rc.move(face.rotateRightDegrees(112.5f), octa_con);
                             face = face.rotateRightDegrees(45);
@@ -96,9 +97,11 @@ public class Gardener {
                                 moved = false;
                             }
                         } else if (!rc.canBuildRobot(RobotType.SCOUT, face) && rc.isBuildReady() && rc.getTeamBullets() > 80) {
-                            status = 0;
-                            timer = 0;
-                            break;
+                            if (rc.senseRobotAtLocation(rc.getLocation().add(face, rc.getType().bodyRadius*2)) == null) {
+                                status = 0;
+                                timer = 0;
+                                break;
+                            }
                         }
 
                         switch(h) {
@@ -162,7 +165,8 @@ public class Gardener {
 
                 Clock.yield();
             } catch (GameActionException e) {
-                System.out.println(e.getMessage());
+                System.out.println("EXCEPTION");
+                e.printStackTrace();
             }
         }
 

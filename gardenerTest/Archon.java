@@ -21,17 +21,14 @@ public class Archon {
                     }
                 }
 
-                if (rc.canMove(face)) rc.move(face);
-                else {
-                    while (!rc.canMove(face)) {
-                        face = new Direction(2 * (float)Math.PI * rand.nextFloat());
-                    }
-                    rc.move(face);
+                while (!Utils.moveTowards(rc, face)) {
+                    face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                 }
 
                 Clock.yield();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("EXCEPTION");
+                e.printStackTrace();
             }
         }
     }

@@ -104,7 +104,8 @@ public class Lumberjack {
 
                 Clock.yield();
             } catch (GameActionException e) {
-                System.out.println(e.getMessage());
+                System.out.println("EXCEPTION");
+                e.printStackTrace();
             }
         }
     }

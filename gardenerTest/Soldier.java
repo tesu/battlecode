@@ -106,7 +106,8 @@ public class Soldier {
 
                 Clock.yield();
             } catch (GameActionException e) {
-                System.out.println(e.getMessage());
+                System.out.println("EXCEPTION");
+                e.printStackTrace();
             }
         }
     }
