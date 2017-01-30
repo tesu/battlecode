@@ -24,41 +24,32 @@ public class Utils {
         }
     }
 
-    public static boolean moveTowards(RobotController rc, Direction d) throws GameActionException {
-        if (rc.hasMoved()) return false;
+    public static void dodgeBullets(RobotController rc) throws GameActionException {
+        MapLocation myLocation = rc.getLocation();
 
         BulletInfo[] bullets = rc.senseNearbyBullets();
-        if (bullets.length > 0) {
-            for (int i = 0; i < bullets.length; i++) {
-                if (!willCollide(rc, bullets[i], rc.getLocation())) bullets[i] = null;
-            }
-            BulletInfo b = null;
-            for (int i = 0; i < bullets.length; i++) {
-                if (b == null && bullets[i] != null) b = bullets[i];
-                else if (b != null && bullets[i] != null) {
-                    if (rc.getLocation().distanceTo(bullets[i].location) < rc.getLocation().distanceTo(b.location)) {
-                        b = bullets[i];
-                    }
+        if (bullets.length > 0){
+            BulletInfo nearestBullet = null;
+            float distance = 99;
+            for (BulletInfo bullet : bullets){
+                MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
+                        bullet.location.add(bullet.dir, (float) 0.1).y);
+                if (myLocation.distanceTo(bullet.location) < distance &&
+                        (myLocation.distanceTo(newLocation) < myLocation.distanceTo(bullet.location)){
+                    distance = myLocation.distanceTo(bullet.location);
+                    nearestBullet = bullet;
                 }
             }
-            if (b != null) {
-                Direction left = rc.getLocation().directionTo(b.location).rotateLeftDegrees(90);
-                if (Math.abs(left.degreesBetween(d)) < Math.abs(left.opposite().degreesBetween(d))) {
-                    if (rc.canMove(left)) {
-                        rc.move(left);
-                        return true;
-                    }
-                }
-                if (rc.canMove(left.opposite())) {
-                    rc.move(left.opposite());
-                    return true;
-                }
-                if (rc.canMove(left)) {
-                    rc.move(left);
-                    return true;
-                }
+
+            if (rc.getMoveCount() == 0 && nearestBullet != null) {
+                Direction direction = nearestBullet.location.directionTo(myLocation);
+                tryMove(rc, direction);
             }
         }
+    }
+
+    public static boolean moveTowards(RobotController rc, Direction d) throws GameActionException {
+        if (rc.hasMoved()) return false;
 
         if (rc.canMove(d)) {
             rc.move(d);
