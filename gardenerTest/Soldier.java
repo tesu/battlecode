@@ -25,6 +25,7 @@ public class Soldier {
         while (true) {
             try {
                 Utils.alwaysRun(rc);
+                Utils.dodgeBullets(rc);
 
                 System.out.println(status);
                 timer++;
@@ -43,7 +44,7 @@ public class Soldier {
                         if (radio.targetCount() == 0) {
                             MapLocation[] m = rc.senseBroadcastingRobotLocations();
                             if (m.length == 0) {
-                                while (!Utils.moveTowards(rc, face)) {
+                                while (!rc.hasMoved() && !Utils.moveTowards(rc, face)) {
                                     face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                                 }
                                 break;
@@ -68,7 +69,7 @@ public class Soldier {
                         }
                         face = rc.getLocation().directionTo(target);
                         if (!rc.canSenseLocation(target)) {
-                            while (!Utils.moveTowards(rc, face)) {
+                            while (!rc.hasMoved() && !Utils.moveTowards(rc, face)) {
                                 face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                             }
                             if (timer >= 100) status = 3;
@@ -83,7 +84,6 @@ public class Soldier {
                             status = 1;
                             break;
                         }
-                        Utils.dodgeBullets(rc);
                         Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
                         break;
                     case 3:
@@ -94,7 +94,7 @@ public class Soldier {
                             timer = 0;
                             break;
                         }
-                        while (!Utils.moveTowards(rc, face)) {
+                        while (rc.hasMoved() && !Utils.moveTowards(rc, face)) {
                             face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                         }
                     default:
