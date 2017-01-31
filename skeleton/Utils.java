@@ -35,7 +35,7 @@ public class Utils {
                 MapLocation newLocation = new MapLocation(bullet.location.add(bullet.dir, (float) 0.1).x,
                         bullet.location.add(bullet.dir, (float) 0.1).y);
                 if (myLocation.distanceTo(bullet.location) < distance &&
-                        (myLocation.distanceTo(newLocation) < myLocation.distanceTo(bullet.location)){
+                        myLocation.distanceTo(newLocation) < myLocation.distanceTo(bullet.location)) {
                     distance = myLocation.distanceTo(bullet.location);
                     nearestBullet = bullet;
                 }
@@ -43,7 +43,7 @@ public class Utils {
 
             if (rc.getMoveCount() == 0 && nearestBullet != null) {
                 Direction direction = nearestBullet.location.directionTo(myLocation);
-                tryMove(rc, direction);
+                moveTowards(rc, direction);
             }
         }
     }
@@ -91,6 +91,10 @@ public class Utils {
             RobotInfo target = enemies[0];
             for (RobotInfo t : enemies) {
                 if (t.health < target.health) target = t;
+            }
+            if (rc.getType() == RobotType.SOLDIER && rc.canFireTriadShot()) {
+                rc.fireTriadShot(rc.getLocation().directionTo(target.location));
+                return true;
             }
             if (rc.canFireSingleShot()) {
                 rc.fireSingleShot(rc.getLocation().directionTo(target.location));
