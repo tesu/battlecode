@@ -80,9 +80,14 @@ public class Scout {
                             target = null;
                             status = 1;
                             break;
-                        } else {
-                            Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
                         }
+                        for (RobotInfo e : enemies) {
+                            if (e.getType() == RobotType.GARDENER || e.getType() == RobotType.ARCHON) {
+                                Utils.moveTowards(rc, rc.getLocation().directionTo(e.location));
+                                break;
+                            }
+                        }
+                        Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
                     default:
                 }
 
