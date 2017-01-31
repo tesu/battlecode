@@ -24,6 +24,7 @@ public class Lumberjack {
         while (true) {
             try {
                 Utils.alwaysRun(rc);
+                Utils.dodgeBullets(rc);
 
                 System.out.println(status);
 
@@ -66,7 +67,7 @@ public class Lumberjack {
                         }
                         face = rc.getLocation().directionTo(target);
                         if (!rc.canSenseLocation(target)) {
-                            while (!Utils.moveTowards(rc, face)) {
+                            while (!rc.hasMoved() && !Utils.moveTowards(rc, face)) {
                                 face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                             }
                             break;
@@ -80,7 +81,6 @@ public class Lumberjack {
                             status = 1;
                             break;
                         }
-                        Utils.dodgeBullets(rc);
                         Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
                         break;
                     default:
