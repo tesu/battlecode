@@ -24,6 +24,7 @@ public class Scout {
         while (true) {
             try {
                 Utils.alwaysRun(rc);
+                Utils.dodgeBullets(rc);
 
                 System.out.println(status);
 
@@ -41,7 +42,7 @@ public class Scout {
                         if (radio.targetCount() == 0) {
                             MapLocation[] m = rc.senseBroadcastingRobotLocations();
                             if (m.length == 0) {
-                                while (!Utils.moveTowards(rc, face)) {
+                                while (!rc.hasMoved() && !Utils.moveTowards(rc, face)) {
                                     face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                                 }
                                 break;
@@ -66,7 +67,7 @@ public class Scout {
                         }
                         face = rc.getLocation().directionTo(target);
                         if (!rc.canSenseLocation(target)) {
-                            while (!Utils.moveTowards(rc, face)) {
+                            while (!rc.hasMoved() && !Utils.moveTowards(rc, face)) {
                                 face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                             }
                             break;
@@ -80,7 +81,6 @@ public class Scout {
                             status = 1;
                             break;
                         } else {
-                            Utils.dodgeBullets(rc);
                             Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
                         }
                     default:
