@@ -80,6 +80,7 @@ public class Scout {
                             status = 1;
                             break;
                         } else {
+                            Utils.dodgeBullets(rc);
                             Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
                         }
                     default:

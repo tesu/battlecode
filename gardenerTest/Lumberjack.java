@@ -80,6 +80,7 @@ public class Lumberjack {
                             status = 1;
                             break;
                         }
+                        Utils.dodgeBullets(rc);
                         Utils.moveTowards(rc, rc.getLocation().directionTo(enemies[0].location));
                         break;
                     default:

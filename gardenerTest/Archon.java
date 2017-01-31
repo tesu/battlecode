@@ -21,6 +21,7 @@ public class Archon {
                     }
                 }
 
+                Utils.dodgeBullets(rc);
                 while (!Utils.moveTowards(rc, face)) {
                     face = new Direction(2 * (float) Math.PI * rand.nextFloat());
                 }
